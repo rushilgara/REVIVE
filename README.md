@@ -161,3 +161,60 @@ python scripts/run_evaluation.py
 ---
 
 ## Project Layout
+## Project Layout
+
+```
+REVIVE/
+├── backend/
+│   ├── app/
+│   │   ├── agents/          # AI diagnosis, decision & explanation agents
+│   │   ├── api/              # REST routers (dashboard, recovery, approvals, demo, webhooks)
+│   │   ├── core/              # Config, security, logging, exceptions
+│   │   ├── database/          # SQLAlchemy session & Base
+│   │   ├── engine/            # State machine, risk, policy, stopping rules, outcome engines
+│   │   ├── models/            # SQLAlchemy 2.0 database models
+│   │   ├── schemas/           # Pydantic v2 validation schemas
+│   │   ├── services/          # Razorpay integration, AI providers, simulation & evaluation
+│   │   └── utils/             # Money arithmetic (paise), enums, timestamps
+│   ├── tests/                 # Unit, safety and integration tests
+│   └── requirements.txt
+├── frontend/
+│   ├── src/
+│   │   ├── api/                # Typed API client
+│   │   ├── components/         # StatusBadge, MetricCard, EmptyState, LoadingSkeleton
+│   │   ├── layouts/             # AppLayout, Sidebar, Header
+│   │   ├── pages/                # Dashboard & management pages
+│   │   ├── types/                 # TypeScript interfaces
+│   │   ├── utils/                  # Monetary and date formatting
+│   │   ├── App.tsx
+│   │   └── main.tsx
+│   ├── package.json
+│   ├── tailwind.config.js
+│   └── vite.config.ts
+├── docs/                        # Engineering documentation suite
+├── scripts/
+│   ├── seed.py                  # Generates 1,000 realistic cases
+│   ├── demo.py                  # CLI demo of Cases A, B, C
+│   └── run_evaluation.py        # REVIVE vs. baseline benchmark
+├── docker-compose.yml
+└── README.md
+```
+
+
+
+---
+
+## Security & Compliance
+
+- **HMAC-SHA256 webhook verification** — rejects unauthenticated or tampered callbacks
+- **Data isolation** — strict merchant scoping, no cross-tenant leakage
+- **Immutable audit trail** — every state transition, AI rationale, approval, and settlement is permanently logged
+- **Zero hallucination guard** — deterministic policy engines override LLM proposals whenever safety thresholds are reached
+
+---
+
+<div align="center">
+
+Built for the **Razorpay AI Buildathon 2026 — Track 03: AI Revenue Recovery**
+
+</div>
