@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: revive_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: revive_user
+      POSTGRES_PASSWORD: revive_password
+      POSTGRES_DB: revive_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U revive_user -d revive_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: revive_backend
+    restart: always
+    environment:
+      APP_ENV: production
+      DATABASE_URL: postgresql+asyncpg://revive_user:revive_password@postgres:5432/revive_db
+      INTEGRATION_MODE: simulation
+      AI_PROVIDER: deterministic_fallback
+      PORT: 8000
+      HOST: 0.0.0.0
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: revive_frontend
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:
